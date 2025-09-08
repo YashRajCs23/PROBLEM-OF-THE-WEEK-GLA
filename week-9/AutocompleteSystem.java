@@ -1,6 +1,7 @@
 public class AutocompleteSystem {
     // Node class represents each character node in the Trie
     class Node {
+        
         Node[] links = new Node[26]; // Only lowercase 'a' - 'z'
         boolean flag; // Marks end of a word
         // Store a node reference for a character
