@@ -1,43 +1,48 @@
-public class FirstMissingPositive{
+public class FirstMissingPositive {
     /*
-     * Problem: Find the smallest missing positive integer.
-     * Approach: 
-     * - Use array indices as markers (hashing idea).
+     * Approach 1: Negative Marking
      * - Replace invalid values with 1.
-     * - Mark presence of numbers by negating the value at corresponding index.
+     * - Use index positions and mark visited numbers by negating values.
      * - First index with positive value => missing number.
-     *
-     * T.C : O(n)   (iterate array a few times)
-     * S.C : O(1)   (in-place marking, no extra space)
+     * TC: O(n), SC: O(1)
      */
     public int firstMissingPositive(int[] nums) {
         int n = nums.length;
         boolean contains1 = false;
-        // Step 1: Replace invalid numbers and check for presence of '1'
         for (int i = 0; i < n; i++) {
-            if (nums[i] == 1) {
-                contains1 = true;
-            }
-            if (nums[i] <= 0 || nums[i] > n) {
-                nums[i] = 1; // replace out-of-range numbers with 1
-            }
+            if (nums[i] == 1) contains1 = true;
+            if (nums[i] <= 0 || nums[i] > n) nums[i] = 1;
         }
-        if (!contains1) return 1; // if '1' not present, that's the answer
-        // Step 2: Use index as a hash key and negative sign as presence detector
+        if (!contains1) return 1;
         for (int i = 0; i < n; i++) {
             int val = Math.abs(nums[i]);
             int idx = val - 1;
-            if (nums[idx] > 0) {
-                nums[idx] *= -1; // mark presence
-            }
+            if (nums[idx] > 0) nums[idx] *= -1;
         }
-        // Step 3: First positive index indicates missing number
         for (int i = 0; i < n; i++) {
-            if (nums[i] > 0) {
-                return i + 1;
+            if (nums[i] > 0) return i + 1;
+        }
+        return n + 1;
+    }
+    /*
+     * Approach 2: Cyclic Sort
+     * - Place each number at its correct index: number x -> index x-1.
+     * - Swap until numbers are in correct positions.
+     * - First mismatch index => missing number.
+     * TC: O(n), SC: O(1)
+     */
+    public int firstMissingPositiveCycle(int[] nums) {
+        int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            while (nums[i] > 0 && nums[i] <= n && nums[nums[i] - 1] != nums[i]) {
+                int temp = nums[nums[i] - 1];
+                nums[nums[i] - 1] = nums[i];
+                nums[i] = temp;
             }
         }
-        // Step 4: If all numbers 1..n are present, return n+1
+        for (int i = 0; i < n; i++) {
+            if (nums[i] != i + 1) return i + 1;
+        }
         return n + 1;
     }
 }
